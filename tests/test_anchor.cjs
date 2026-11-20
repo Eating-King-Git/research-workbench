@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const {locate}=require('../program/static/anchor.js');
+const text='第一段 α+β。相同词。第二段 🐳 中文。相同词。结束。';
+const start=text.lastIndexOf('相同词'),quote='相同词';
+const a={quote,start,end:start+quote.length,prefix:text.slice(start-8,start),suffix:text.slice(start+quote.length)};
+assert.deepEqual(locate(text,a),{start,end:a.end});
+assert.deepEqual(locate('新增前言。'+text,a),{start:start+5,end:a.end+5});
+assert.equal(locate(text.replaceAll('相同词','已改动'),a),null);
+assert.equal(locate('相同词。相同词。',{quote,start:999,end:1002,prefix:'',suffix:''}),null);
+const emojiStart=text.indexOf('🐳');
+assert.deepEqual(locate(text,{quote:'🐳 中文',start:emojiStart,end:emojiStart+5,prefix:'',suffix:''}),{start:emojiStart,end:emojiStart+5});
+console.log('5 anchor assertions passed: offsets, relocation, missing quote, ambiguity, Unicode.');

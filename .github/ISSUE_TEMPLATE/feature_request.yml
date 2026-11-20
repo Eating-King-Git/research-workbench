@@ -1,0 +1,11 @@
+name: 功能建议
+description: 说明实际使用中遇到的困难
+title: "[Feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 希望解决什么问题
+      description: 描述具体阅读或记录流程、现在的做法，以及改进后的效果。
+    validations:
+      required: true

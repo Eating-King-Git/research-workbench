@@ -1,0 +1,18 @@
+[
+  {
+    "work_id": "demo-reading-card",
+    "id": "DEMO",
+    "name": "示例：怎样比较两种方法（虚构）",
+    "title": "怎样比较两种方法（虚构教学示例，非真实论文）",
+    "year": "",
+    "venue": "虚构示例",
+    "url": "https://example.com/",
+    "version": "示例 v1",
+    "card_path": "05_文献阅读/阅读卡/示例阅读卡.md",
+    "depth": "教学示例，非文献核读",
+    "directions": [
+      "demo"
+    ],
+    "problem": "练习阅读、批注、笔记和备份；不提供真实研究结论。"
+  }
+]

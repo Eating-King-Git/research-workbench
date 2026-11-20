@@ -1,0 +1,55 @@
+name: Windows checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-and-package:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      WORKBENCH_NO_PAUSE: '1'
+      WORKBENCH_NO_BROWSER: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          architecture: x64
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Fetch locked dependencies
+        run: python tools/fetch_wheels.py
+      - name: Install offline
+        run: python runtime.py install
+      - name: Python behavior tests
+        run: .venv/Scripts/python.exe -m unittest discover -s tests -v
+      - name: JavaScript checks
+        run: |
+          node tests/test_anchor.cjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node --check program/static/app.js
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node --check program/static/annotations.js
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Build and verify actual ZIP
+        run: |
+          .venv/Scripts/python.exe tools/build_release.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $releaseZip = Get-ChildItem dist/ResearchWorkbench-*-windows-x64.zip | Select-Object -First 1
+          .venv/Scripts/python.exe tools/verify_release.py $releaseZip.FullName
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows-tested-package
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14

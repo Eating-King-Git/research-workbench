@@ -1,0 +1,17 @@
+.annotation-toolbar{background:#eaf5f5;border:1px solid #b8d9d9;border-radius:10px;padding:16px 20px;margin:20px 0;color:#1e4c56}
+.annotation-toolbar>.row{margin:10px 0}.annotation-toolbar>span{font-weight:600}.annotation-toolbar button{font-size:14px}
+.quote-highlight{background:#ffedb0;color:inherit;border-bottom:2px solid #d6a93e;cursor:pointer;padding:1px 0;border-radius:2px;scroll-margin:100px 0}
+.quote-highlight.understood{background:#dcefe5;border-bottom-color:#559b78}.quote-highlight:focus{outline:2px solid #096b78}
+#selection-popover{position:fixed;z-index:50;padding:7px 13px;box-shadow:0 5px 18px #123a4b44;font-size:14px}
+.annotation-card{border:1px solid #d7e2e6;border-radius:8px;padding:14px;margin:14px 0;background:#fff;scroll-margin:20px}
+.annotation-card:focus{outline:2px solid #16808a}.annotation-card small{font-size:12px;color:#697e8b}.annotation-card p{white-space:pre-wrap;overflow-wrap:anywhere}.annotation-card .row{gap:8px}.annotation-card button{font-size:14px;padding:6px 10px}
+.annotation-card blockquote,.annotation-form blockquote,#notebook-results blockquote{margin:12px 0;padding:8px 12px;background:#fff9e7;border-left:3px solid #d6a93e;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:180px;overflow:auto}
+.annotation-question{font-weight:600}.annotation-form{border:1px solid #97c9ce;border-radius:8px;background:#f1f9fa;padding:14px;margin-bottom:20px}
+.annotation-form .field{margin:12px 0}.annotation-form textarea{min-height:80px}.annotation-form button{font-size:14px;padding:8px 10px}
+#annotation-save-state{margin:10px 0;font-size:14px}#annotation-status{font-size:14px;white-space:pre-wrap;color:#8e3b28}.ann-archive-toggle{font-size:14px;color:#546c78}
+.text-button{background:transparent;color:#526d78;border-color:transparent;text-decoration:underline}.notebook-query{flex:1;min-width:220px}
+#discussion-dialog{width:min(860px,94vw);max-height:90vh;border:1px solid #b6d1da;border-radius:14px;padding:26px;color:#183746;box-shadow:0 12px 70px #102b3b44}
+#discussion-dialog::backdrop{background:#18344380}.discussion-choices{max-height:32vh;overflow:auto;margin:16px 0}.discussion-choice{display:flex;align-items:start;gap:12px;padding:10px 0;border-bottom:1px solid #dfebed}.discussion-choice input{margin-top:8px}.discussion-choice span{white-space:pre-wrap;overflow-wrap:anywhere}
+#draft-guard{max-width:min(520px,94vw);border:1px solid #b6d1da;border-radius:14px;padding:24px;color:#183746}#draft-guard::backdrop{background:#18344380}
+#discussion-text{min-height:260px;font-size:14px}#discussion-feedback{margin-top:14px;white-space:pre-wrap}
+@media(max-width:850px){.annotation-toolbar{padding:14px}.annotation-toolbar .row{gap:8px}#discussion-dialog{padding:18px}.annotation-card{padding:12px}.notes{overflow:visible}.annotation-form textarea{min-height:100px}}

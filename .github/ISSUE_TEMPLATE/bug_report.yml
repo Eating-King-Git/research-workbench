@@ -1,0 +1,22 @@
+name: 问题反馈
+description: 报告安装、阅读、保存或恢复问题
+title: "[Bug] "
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境
+      description: 工作台版本、Windows版本、Python版本、浏览器
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 使用虚构数据，写清操作、预期和实际结果。不要上传个人笔记、备份或凭据。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 已去除私人内容的截图或错误摘要

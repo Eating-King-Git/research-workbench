@@ -1,0 +1,12 @@
+科研工作台 1.2.0-beta.1（公开测试版）
+
+请先准备 Windows x64 和标准 Python 3.13 x64。
+完整解压后依次运行“首次安装.cmd”和“启动工作台.cmd”。
+离线依赖已包含；用完运行“停止工作台.cmd”。
+默认地址 http://127.0.0.1:8767/app/
+
+首次安装从 examples/site 创建独立 site 数据目录，不覆盖已有 site。
+个人记录保存到 site/07_个人记录。完整迁移请停止后复制整个目录，并在新位置重新安装。
+JSON备份不包含正文、PDF与基础文献元数据。
+
+详情见 README.md、docs/USER_GUIDE.md 和 THIRD_PARTY_NOTICES.md。
