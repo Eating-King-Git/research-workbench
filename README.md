@@ -20,7 +20,7 @@
 
 数据保存在本机文件夹中，无需工作台账号、数据库服务或模型 API 密钥。
 
-## 三步开始
+## 三步开始（发给ai可以一次搞定）
 
 目前发布目标是 **Windows x64 + 标准 CPython 3.13 x64**。请自行安装 [Python](https://www.python.org/downloads/windows/)，安装时启用 Python Launcher 或将 `python` 加入 PATH；不支持自由线程 `3.13t` 构建。
 
