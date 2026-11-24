@@ -32,6 +32,7 @@ window.Annotations=(()=>{
     if(annotationId){const r=A.rows.find(r=>r.id===annotationId);if(r){if(r.data.archived){A.showArchived=true;q('#ann-archived').checked=true;cards();}showPanel();q('#ann-card-'+r.id)?.scrollIntoView({block:'center'});q('#ann-card-'+r.id)?.focus();}}
   }
   function selection(){
+    if(window.ResearchNotes)return;
     const root=q('#annotation-content'),sel=window.getSelection();if(!root||!A.doc||!sel?.rangeCount||sel.isCollapsed)return;
     const range=sel.getRangeAt(0);if(!root.contains(range.startContainer)||!root.contains(range.endContainer))return;
     const quote=range.toString();if(!quote.trim()||quote.length>5000){q('#selection-hint').textContent='请选择1至5000字符的原文。';q('#ann-new').disabled=true;A.selection=null;q('#selection-popover')?.remove();return;}
@@ -71,7 +72,7 @@ window.Annotations=(()=>{
   }
   function notebook(){
     const annotations=all(),notes=S.data.records.filter(r=>r.kind==='reading'&&['understanding','questions','next_step','location'].some(k=>r.data[k]));
-    return `<h1>我的笔记与批注</h1><p class="subtitle">整篇的理解、具体句段的困惑，都能回到原文继续。</p><section class="panel"><div class="row"><label class="field notebook-query">搜索我的记录<input id="notebook-query" placeholder="搜索原句、困惑、讨论摘录或理解"></label><label class="field">记录类型<select id="notebook-kind">${option('','全部记录')}${option('annotation','原文批注')}${option('reading','整篇笔记')}</select></label><label class="field">批注状态<select id="notebook-status">${option('','全部状态')}${['待讨论','仍有疑问','已理解','已收起'].map(x=>option(x)).join('')}</select></label></div><p class="meta">${annotations.filter(r=>!r.data.archived).length} 条原文批注 · ${notes.length} 篇阅读笔记。到论文卡或报告正文选中文字即可添加批注。</p><div id="notebook-results"></div></section>`;
+    return `<h1>我的笔记与批注</h1><p><button type="button" data-open-global-notes>查看全站批注与讨论</button></p><p class="subtitle">整篇的理解、具体句段的困惑，都能回到原文继续。</p><section class="panel"><div class="row"><label class="field notebook-query">搜索我的记录<input id="notebook-query" placeholder="搜索原句、困惑、讨论摘录或理解"></label><label class="field">记录类型<select id="notebook-kind">${option('','全部记录')}${option('annotation','原文批注')}${option('reading','整篇笔记')}</select></label><label class="field">批注状态<select id="notebook-status">${option('','全部状态')}${['待讨论','仍有疑问','已理解','已收起'].map(x=>option(x)).join('')}</select></label></div><p class="meta">${annotations.filter(r=>!r.data.archived).length} 条原文批注 · ${notes.length} 篇阅读笔记。到论文卡或报告正文选中文字即可添加批注。</p><div id="notebook-results"></div></section>`;
   }
   function filterNotebook(){
     const query=(q('#notebook-query')?.value||'').toLowerCase(),kind=q('#notebook-kind')?.value,status=q('#notebook-status')?.value;

@@ -35,3 +35,6 @@ certifi 使用 MPL-2.0，其对应的未修改源代码发行包随项目和离�
 ## 其他说明
 
 上表来自锁定 wheel 的发行元数据，不是对其完整历史和全部上游代码的法律审计。第三方声明和子组件许可，以相应 wheel、元数据和原始许可内容为准。示例域名 example.com / example.org 仅用于虚构教学，不代表合作或背书。
+
+
+pypdf 6.1.3 — BSD-3-Clause. Original license: third_party/licenses/pypdf-6.1.3/pypdf-6.1.3.dist-info/licenses/LICENSE

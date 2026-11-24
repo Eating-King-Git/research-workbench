@@ -83,20 +83,24 @@ def verify(archive):
                     'answer': '', 'understanding': '', 'status': '待讨论', 'archived': False}
                 ann = request(p, '/annotations/ann-release', {'data': annotation, 'expected_revision': 0,
                               'expected_hash': ''}, 'PUT', token)
+                excerpt = request(p, '/excerpts/excerpt-release', {'data': {'source':'/app/#/home','title':'Release sample','quote':'Sample quote','context':'Sample quote with full context','locator':'{}','question':'Explain this quote','answer':'','understanding':'','status':'待讨论'}, 'expected_revision':0,'expected_hash':''}, 'PUT', token)
+                packet = request(p, '/discussion-packets', {'ids':['excerpt:excerpt-release']}, 'POST', token)
+                discussion = request(p, '/records/discussion/'+packet['id'])
+                assert 'Sample quote with full context' in packet['text']
                 assert request(p, '/search?q=' + urllib.parse.quote('发布验收'))['total'] >= 2
                 entry(a, 'stop', p); wait_stopped(p); entry(a, 'start', p)
                 rows = request(p, '/bootstrap')['records']
-                assert len(rows) == 2
+                assert len(rows) == 4
                 bundle = request(p, '/export')
                 empty = request(q, '/bootstrap'); assert empty['records'] == []
                 preview = request(q, '/import/preview', bundle, token=empty['token'])
                 assert all(r['state'] == '新增' for r in preview['rows'])
                 result = request(q, '/import/apply', {'preview_id': preview['preview_id'],
                         'selected': [r['key'] for r in preview['rows']]}, token=empty['token'])
-                assert result['imported'] == 2
+                assert result['imported'] == 4
                 assert list((b / 'site/07_个人记录/导入前备份').glob('*.json'))
                 entry(b, 'stop', q); wait_stopped(q); entry(b, 'start', q)
-                for record in [note, ann]:
+                for record in [note, ann, excerpt, discussion]:
                     assert request(q, '/records/' + record['kind'] + '/' + record['id'])['data'] == record['data']
                 print('PASS: manifest, clean ZIP, two fresh offline installs, start, save, search, restart, JSON export, empty-store restore, backup, restored restart.')
             finally:

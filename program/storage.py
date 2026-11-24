@@ -4,7 +4,7 @@ from threading import RLock
 from datetime import datetime, timezone
 import hashlib, json, os, re, tempfile, uuid
 
-KINDS = {'reading': '阅读记录', 'task': '当前任务', 'settings': '收藏与筛选', 'paper': '新增文献', 'annotation':'原文批注'}
+KINDS = {'reading': '阅读记录', 'task': '当前任务', 'settings': '收藏与筛选', 'paper': '新增文献', 'annotation':'原文批注','excerpt':'全站批注','discussion':'批注讨论'}
 READING_STATES = ['待本人确认', '待读', '在读', '已读', '需要复读']
 
 def now():
@@ -29,21 +29,23 @@ def validate(kind, data):
     if kind not in KINDS or not isinstance(data, dict):
         raise ValueError('记录格式不正确')
     allowed = {
+        'excerpt': {'source','title','quote','context','locator','snapshot_hash','captured_at','loaded_source_version','source_path','source_version','question','answer','understanding','status'},
+        'discussion': {'title','content','annotation_ids','answer'},
         'reading': {'status','favorite','understanding','questions','next_step','location','paper_version'},
         'task': {'title','reason','criteria','status','link'},
         'settings': {'views'},
         'paper': {'title','name','url','version','year','directions','venue','problem'},
-        'annotation': {'doc_id','doc_title','doc_path','paper_id','quote','prefix','suffix','start','end','section_id','section_title','source_hash','question','answer','understanding','status','archived'},
+        'annotation': {'doc_id','doc_title','doc_path','paper_id','quote','prefix','suffix','start','end','section_id','section_title','source_hash','question','answer','understanding','status','archived','context_snapshot','snapshot_hash','snapshot_status'},
     }[kind]
     if set(data) - allowed:
         raise ValueError('记录包含未知字段')
-    if len(encoded(data)) > 200_000:
+    if len(encoded(data)) > (8_000_000 if kind in ('excerpt','discussion') else 200_000):
         raise ValueError('一条记录过长，请拆分后保存')
     for key, value in data.items():
         if key in ('favorite','archived'):
             if type(value) is not bool: raise ValueError('收藏状态格式不正确')
         elif kind=='annotation' and key in ('start','end'):
-            if type(value) is not int or not 0<=value<=10_000_000:raise ValueError('原文位置无效')
+            if type(value) is not int or not 0<=value<=100_000_000:raise ValueError('原文位置无效')
         elif key in ('directions',):
             if not isinstance(value, list) or len(value)>20 or any(not isinstance(x,str) or len(x)>100 for x in value): raise ValueError('方向格式不正确')
         elif key == 'views':
@@ -52,9 +54,12 @@ def validate(kind, data):
                 if not isinstance(v,dict) or set(v)!={'name','filters'} or not isinstance(v['name'],str) or not 1<=len(v['name'])<=80: raise ValueError('保存筛选格式不正确')
                 if not isinstance(v['filters'],dict) or set(v['filters'])-{'q','direction','year','status','depth','favorite'} or any(not isinstance(x,str) or len(x)>200 for x in v['filters'].values()): raise ValueError('筛选条件格式不正确')
         else:
-            if not isinstance(value,str) or len(value)>30_000: raise ValueError('文字格式不正确或内容过长')
+            if not isinstance(value,str) or len(value)>(2_000_000 if kind in ('excerpt','discussion') else 30_000): raise ValueError('文字格式不正确或内容过长')
     if kind == 'reading' and data.get('status','待本人确认') not in READING_STATES:
         raise ValueError('阅读状态无效')
+    if kind == 'excerpt':
+        if not all(isinstance(data.get(k),str) and data[k].strip() for k in ('source','quote','context','question')):raise ValueError('来源、原文、上下文和批注不能为空')
+        if data.get('status') not in ['待讨论','仍有疑问','已理解','已收起']:raise ValueError('批注状态无效')
     if kind == 'annotation':
         if not re.fullmatch(r'doc-[a-f0-9]{16}',data.get('doc_id','')):raise ValueError('批注所属资料无效')
         if not data.get('quote','').strip() or len(data['quote'])>5000:raise ValueError('请选择1至5000字符的原文')
@@ -137,7 +142,7 @@ class Store:
     def inspect_bundle(self, bundle):
         if not isinstance(bundle,dict) or bundle.get('format')!='research-workbench-records' or bundle.get('schema_version')!=1: raise ValueError('不支持的备份格式')
         records=bundle.get('records')
-        if not isinstance(records,list) or len(records)>5000 or len(encoded(bundle))>10_000_000 or digest(records)!=bundle.get('sha256'): raise ValueError('备份内容或校验值不正确')
+        if not isinstance(records,list) or len(records)>5000 or len(encoded(bundle))>100_000_000 or digest(records)!=bundle.get('sha256'): raise ValueError('备份内容或校验值不正确')
         rows=[]; keys=set()
         for obj in records:
             if not isinstance(obj,dict) or obj.get('schema_version')!=1: raise ValueError('备份记录格式错误')

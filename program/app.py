@@ -6,6 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from storage import Store, Conflict, validate, encoded, now
 from catalog import Catalog, work_id
 from annotations import install_annotations
+from global_notes import install_global_notes
+from reading_pages import readable_response
 import argparse, json, os, secrets, time, uuid
 
 BASE=Path(__file__).resolve().parent
@@ -20,6 +22,7 @@ def create_app(site_root,data_root=None,test_mode=False):
     app=FastAPI(docs_url=None,redoc_url=None,openapi_url=None)
     app.state.store=store; app.state.catalog=catalog; app.state.token=token
     install_annotations(app,catalog,store)
+    install_global_notes(app,catalog,store)
 
     @app.middleware('http')
     async def local_only(request,call_next):
@@ -34,7 +37,7 @@ def create_app(site_root,data_root=None,test_mode=False):
                 return JSONResponse({'error':'会话已更新，请刷新后重试；请先导出未保存草稿'},403)
             try: size=int(request.headers.get('content-length','0'))
             except ValueError: return JSONResponse({'error':'请求大小无效'},400)
-            if size>10_000_000: return JSONResponse({'error':'记录包过大'},413)
+            if size>100_000_000: return JSONResponse({'error':'记录包过大'},413)
         response=await call_next(request)
         response.headers['X-Content-Type-Options']='nosniff'
         response.headers['Referrer-Policy']='no-referrer'
@@ -146,11 +149,14 @@ def create_app(site_root,data_root=None,test_mode=False):
         return result
 
     @app.get('/site/{rel:path}')
-    def site_file(rel):
+    def site_file(rel, raw:bool=False):
         path=(root/rel).resolve()
         if not path.is_relative_to(root) or not path.is_file(): raise HTTPException(404,'未找到本地资料')
         parts=path.relative_to(root).parts
         if any(p.startswith('.') for p in parts) or parts[0].startswith('07_') or path.suffix.lower() not in {'.html','.md','.txt','.json','.css','.js','.pdf','.png','.jpg','.jpeg','.svg','.webp','.csv','.cmd','.ps1'}: raise HTTPException(403,'此文件不通过网页公开')
+        if not raw:
+            rendered=readable_response(path,root)
+            if rendered is not None:return rendered
         return FileResponse(path)
 
     app.mount('/app',StaticFiles(directory=BASE/'static',html=True),name='app')

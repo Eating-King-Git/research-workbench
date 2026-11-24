@@ -331,6 +331,24 @@
         "Homepage, https://uvicorn.dev/",
         "Source, https://github.com/Kludex/uvicorn"
       ]
+    },
+    {
+      "name": "pypdf",
+      "version": "6.1.3",
+      "filename": "pypdf-6.1.3-py3-none-any.whl",
+      "sha256": "eb049195e46f014fc155f566fa20e09d70d4646a9891164ac25fa0cbcfcdbcb5",
+      "bytes": 323863,
+      "url": "https://files.pythonhosted.org/packages/fa/ed/494fd0cc1190a7c335e6958eeaee6f373a281869830255c2ed4785dac135/pypdf-6.1.3-py3-none-any.whl",
+      "license": "BSD-3-Clause",
+      "license_files": [
+        "third_party/licenses/pypdf-6.1.3/pypdf-6.1.3.dist-info/licenses/LICENSE"
+      ],
+      "project_urls": [
+        "https://github.com/py-pdf/pypdf/issues",
+        "https://pypdf.readthedocs.io/en/latest/meta/CHANGELOG.html",
+        "https://pypdf.readthedocs.io/en/latest/",
+        "https://github.com/py-pdf/pypdf"
+      ]
     }
   ],
   "sources": [

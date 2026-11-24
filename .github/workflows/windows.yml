@@ -36,6 +36,8 @@ jobs:
         run: |
           node tests/test_anchor.cjs
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node --check program/static/global_notes.js
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           node --check program/static/app.js
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           node --check program/static/annotations.js
