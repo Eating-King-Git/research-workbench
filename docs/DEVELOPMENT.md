@@ -12,7 +12,7 @@ node tests/test_anchor.cjs
 node --check program/static/app.js
 node --check program/static/annotations.js
 .venv/Scripts/python.exe tools/build_release.py
-.venv/Scripts/python.exe tools/verify_release.py dist/ResearchWorkbench-1.3.0-beta.1-windows-x64.zip
+.venv/Scripts/python.exe tools/verify_release.py dist/ResearchWorkbench-1.3.0-beta.2-windows-x64.zip
 ```
 
 `verify_release.py` 从指定 ZIP 解压到临时的中文/空格目录，用全新 venv 执行离线安装、启动、保存、导出、独立空库恢复、重启与停止；测试数据不会写回仓库示例。测试只使用 localhost。
